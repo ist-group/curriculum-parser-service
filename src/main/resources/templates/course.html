@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LGY11 - Subject List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/3.1.1/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" th:href="@{/main.css}"
+          href="/main.css" />
+
+</head>
+<body>
+
+<div class="container">
+    <div >
+        <!--/*@thymesVar id="subject" type="com.ist.curriculum.opendataparser.Subject"*/-->
+        <!--/*@thymesVar id="course" type="com.ist.curriculum.opendataparser.Course"*/-->
+        <h1 th:text="|${subject.getName()} / ${course.getName()}|">Subject Name / Course</h1>
+        <div>
+            <label>Code</label>
+            <span th:text="${course.getCode()}"></span>
+        </div>
+        <div>
+            <label>Description</label>
+            <p th:text="${course.getDescription()}"></p>
+        </div>
+        <div>
+            <label>Central Content</label>
+            <p th:each="cc : ${course.getCentralContent()}" th:text="${cc.content}" th:class="${cc.type}"></p>
+        </div>
+        <div>
+            <h3>Knowledge Requirements</h3>
+            <table class="table">
+                <tr>
+                    <th>Betyget E</th>
+                    <th>Betyget C</th>
+                    <th>Betyget A</th>
+                </tr>
+                <tr th:each="kr : ${course.getKnowledgeRequirement()}">
+                    <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+
+<script type="text/javascript"
+        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

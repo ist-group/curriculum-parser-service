@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LGY11 - Subject List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/3.1.1/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" th:href="@{/main.css}"
+          href="/main.css" />
+
+</head>
+<body>
+
+<div class="container">
+
+    <div >
+        <h1>LGY11 Parser</h1>
+        <h2>Tools</h2>
+        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
+        <div class="list-group">
+            <a class="list-group-item" th:href="@{/merges}">Lista kunskapskrav med ihopslagna meningar</a>
+            <a class="list-group-item" th:href="@{/problems}">Lista fel</a>
+        </div>
+        <h1>Subjects</h1>
+        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
+        <div class="list-group">
+            <a th:each="subject : ${subjectList}" class="list-group-item" th:href="@{/subject/{subject}(subject=${subject})}" th:text="${subject}"></a>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+
+<script type="text/javascript"
+        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

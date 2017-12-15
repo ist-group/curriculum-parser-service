@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LGY11 - Subject List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/3.1.1/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" th:href="@{/main.css}"
+          href="/main.css" />
+
+</head>
+<body>
+
+<div class="container">
+    <div >
+        <!--/*@thymesVar id="subject" type="com.ist.curriculum.opendataparser.Subject"*/-->
+        <h1 th:text="${subject.getName()}">Subject Name</h1>
+        <div>
+            <label>Code</label>
+            <span th:text="${subject.getCode()}"></span>
+        </div>
+        <div>
+            <label>Description</label>
+            <p th:text="${subject.getDescription()}"></p>
+        </div>
+        <div>
+            <h3>Purpose</h3>
+            <!--/*@thymesVar id="purposeSection" type="List<java.lang.String>"*/-->
+            <p th:each="text: ${purposeSection} " th:text="${text}"></p>
+            <!--/*@thymesVar id="purposeHeader" type="java.lang.String"*/-->
+            <h4 th:text="${purposeHeader}"></h4>
+            <ul>
+                <!--/*@thymesVar id="purposeBullets" type="List<java.lang.String>"*/-->
+                <li th:each="purpose: ${purposeBullets}" th:text="${purpose}"></li>
+            </ul>
+        </div>
+        <div>
+            <h3>Courses</h3>
+            <!--/*@thymesVar id="purposeSection" type="List<java.lang.String>"*/-->
+            <ul>
+                <!--/*@thymesVar id="courses" type="List<com.ist.curriculum.opendataparser.Course>"*/-->
+                <!--/*@thymesVar id="subjectFileName" type="java.lang.String"*/-->
+                <li th:each="course: ${courses}"><a th:href="@{/subject/{subject}/course/{code}(subject=${subjectFileName}, code=${course.getCode()})}" th:text="${course.getName()}"></a> </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+
+<script type="text/javascript"
+        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

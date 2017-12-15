@@ -1,0 +1,42 @@
+table p {
+    margin: 10px 0 0 0;
+    border: 2px solid gray;
+    padding: 10px;
+}
+.error {
+    background-color: pink;
+}
+table td {
+    vertical-align: top;
+    width: 33%;
+    padding: 10px;
+}
+table {
+    border: 1px solid gray;
+    margin-bottom:  10px;
+}
+td + td,
+th + th {
+    border-left: 1px solid gray;
+}
+th {
+    border-bottom: 1px solid gray;
+    padding:6px;
+    background-color: #eeeeee;
+}
+span.missing {
+    background-color: yellow;
+}
+
+dd {
+    float: left;
+    margin-right: 10px;
+}
+
+dt {
+    font-weight: normal;
+}
+
+th {
+    padding: 10px 0 0 10px;
+}
