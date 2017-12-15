@@ -13,3 +13,11 @@ This project is based on [Kotlin](https://kotlinlang.org/) so it needs to be dow
 Gradle is used for dependency management.  
 You can download released versions and nightly build artifacts from: https://gradle.org/downloads
 
+## Building and running the application
+
+To run the included tests type: `gradlew test`
+
+To build an executable jar type: `gradlew jar`
+
+To run directly from source type: `gradlew bootRun` 
+To use the service open [http://localhost:8088](http://localhost:8088) 
