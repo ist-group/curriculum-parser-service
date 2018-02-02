@@ -35,6 +35,7 @@ class DiagnosticsService {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Rad på E-nivå saknar .",
                             subject.name,
+                            subject.code,
                             res.filename.removeSuffix(".xml"),
                             course.code,
                             markMissingDots(htmlE),"", ""
@@ -44,6 +45,7 @@ class DiagnosticsService {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Rad på C-nivå saknar .",
                             subject.name,
+                            subject.code,
                             res.filename.removeSuffix(".xml"),
                             course.code,
                             "", markMissingDots(htmlC), ""
@@ -53,6 +55,7 @@ class DiagnosticsService {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Rad på A-nivå saknar .",
                             subject.name,
+                            subject.code,
                             res.filename.removeSuffix(".xml"),
                             course.code,
                             "","", markMissingDots(htmlA)
@@ -76,6 +79,7 @@ class DiagnosticsService {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Olika antal paragrafer mellan E, C och A nivå",
                             subject.name,
+                            subject.code,
                             res.filename.removeSuffix(".xml"),
                             course.code,
                             htmlE, htmlC, htmlA
@@ -117,6 +121,7 @@ class DiagnosticsService {
                         paragraphProblems.add(KnowledgeRequirementProblem(
                                 "Det matchar inte på alla nivåer",
                                 subject.name,
+                                subject.code,
                                 res.filename.removeSuffix(".xml"),
                                 course.code,
                                 combined[GradeStep.E]?.toString()?:"",
@@ -161,6 +166,7 @@ class DiagnosticsService {
                         paragraphProblems.add(KnowledgeRequirementProblem(
                                 "Hittade ihopslagna meningar",
                                 subject.name,
+                                subject.code,
                                 res.filename.removeSuffix(".xml"),
                                 course.code,
                                 "","",""
@@ -173,4 +179,4 @@ class DiagnosticsService {
     }
 }
 
-data class KnowledgeRequirementProblem(val msg: String, val subject:String, val file:String, val courseCode: String, val levelEHtml: String, val levelCHtml: String, val levelAHtml: String)
+data class KnowledgeRequirementProblem(val msg: String, val subject:String, val subjectCode:String, val file:String, val courseCode: String, val levelEHtml: String, val levelCHtml: String, val levelAHtml: String)

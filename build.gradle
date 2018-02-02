@@ -1,10 +1,13 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.2.0'
+		kotlinVersion = '1.2.10'
 		springBootVersion = '1.5.9.RELEASE'
 	}
 	repositories {
 		mavenCentral()
+		maven {
+			url "https://dl.bintray.com/kotlin/exposed"
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -30,6 +33,9 @@ compileTestKotlin {
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://dl.bintray.com/kotlin/exposed"
+	}
 }
 
 
@@ -43,9 +49,10 @@ dependencies {
 	compile("org.jsoup:jsoup:1.10.2")
 	compile("jaxen:jaxen:1.1")
 	compile("info.debatty:java-string-similarity:1.0.1")
-	runtime('org.springframework.boot:spring-boot-devtools')
+	compile("org.jetbrains.exposed:exposed:0.9.1")
 	compile('org.webjars:bootstrap:3.1.1-1')
 	compile('org.webjars:webjars-locator')
+	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

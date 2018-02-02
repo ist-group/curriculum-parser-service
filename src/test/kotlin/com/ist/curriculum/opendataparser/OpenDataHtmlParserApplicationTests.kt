@@ -3,7 +3,6 @@ package com.ist.curriculum.opendataparser
 import com.ist.curriculum.opendataparser.web.RestController
 import com.ist.curriculum.opendataparser.web.WebController
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
