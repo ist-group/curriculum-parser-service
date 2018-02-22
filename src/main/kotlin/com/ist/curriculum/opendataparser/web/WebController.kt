@@ -1,10 +1,11 @@
 package com.ist.curriculum.opendataparser.web
-import com.ist.curriculum.opendataparser.Course
-import com.ist.curriculum.opendataparser.PurposeType
 import com.ist.curriculum.opendataparser.diagostics.DiagnosticsService
 import com.ist.curriculum.opendataparser.diagostics.KnowledgeRequirementProblem
-import com.ist.curriculum.opendataparser.parser.getSubjectParser
+import org.edtech.curriculum.Course
+import org.edtech.curriculum.PurposeType
+import org.edtech.curriculum.SubjectParser
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.support.ResourcePatternUtils
 import org.springframework.stereotype.Controller
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable
 @Controller
 class WebController(@Autowired
                     private val diagnosticsService: DiagnosticsService) {
-
+    private fun getSubjectParser(subjectName: String): SubjectParser {
+        return SubjectParser(ClassPathResource("odata/subject/$subjectName.xml").file)
+    }
     @GetMapping("/")
     fun courseList(model: MutableMap<String, Any>): String {
         val resourceList = ResourcePatternUtils

@@ -1,8 +1,7 @@
 package com.ist.curriculum.opendataparser.diagostics
 
-import com.ist.curriculum.opendataparser.GradeStep
-import com.ist.curriculum.opendataparser.parser.SubjectParser
-import org.dom4j.io.SAXReader
+import org.edtech.curriculum.GradeStep
+import org.edtech.curriculum.SubjectParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
@@ -25,12 +24,12 @@ class DiagnosticsService {
     fun findMissingDots(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(SAXReader().read(res.inputStream))
+            val subject = SubjectParser(res.file)
             for (course in subject.getCourses()!!) {
                 val courseParser = subject.getCourseParser(course.code)
                 val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
                 val htmlC = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.C)
-                val htmlA =courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
+                val htmlA = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
                 if (hasMissingDots(htmlE)) {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Rad på E-nivå saknar .",
@@ -69,7 +68,7 @@ class DiagnosticsService {
     fun findParagraphProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(SAXReader().read(res.inputStream))
+            val subject = SubjectParser(res.file)
             for (course in subject.getCourses()!!) {
                 val courseParser = subject.getCourseParser(course.code)
                 val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
@@ -93,7 +92,7 @@ class DiagnosticsService {
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(SAXReader().read(res.inputStream))
+            val subject = SubjectParser(res.file)
             for (course in subject.getCourses()!!) {
                 // Get the fully parsed course
                 val fullCourse = subject.getCourse(course.code)
@@ -152,7 +151,7 @@ class DiagnosticsService {
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(SAXReader().read(res.inputStream))
+            val subject = SubjectParser(res.file)
             for (course in subject.getCourses()!!) {
                 // Get the fully parsed course
                 val fullCourse = subject.getCourse(course.code)
