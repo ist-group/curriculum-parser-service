@@ -22,11 +22,17 @@
         <div class="list-group">
             <a class="list-group-item" th:href="@{/merges}">Lista kunskapskrav med ihopslagna meningar</a>
             <a class="list-group-item" th:href="@{/problems}">Lista fel</a>
+            <a class="list-group-item" th:href="@{/cc-headings}">Lista rubriker Centralt innehåll</a>
         </div>
-        <h1>Subjects</h1>
+        <h1>Subjects GY</h1>
         <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
         <div class="list-group">
-            <a th:each="subject : ${subjectList}" class="list-group-item" th:href="@{/subject/{subject}(subject=${subject})}" th:text="${subject}"></a>
+            <a th:each="subject : ${subjectListGY}" class="list-group-item" th:href="@{/subject/GY/{subject}(subject=${subject})}" th:text="${subject}"></a>
+        </div>
+        <h1>Subjects VUXGR</h1>
+        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
+        <div class="list-group">
+            <a th:each="subject : ${subjectListVUXGR}" class="list-group-item" th:href="@{/subject/VUXGR/{subject}(subject=${subject})}" th:text="${subject}"></a>
         </div>
     </div>
 </div>

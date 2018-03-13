@@ -21,13 +21,14 @@
         <div>
             <label>Code</label>
             <span th:text="${course.getCode()}"></span>
+            <a th:href="@{/api/subject/{schoolForm}/{subject}/course/{code}(schoolForm=${schoolForm}, subject=${subjectFileName}, code=${course.getCode()})}" target="_blank">Open JSON</a>
         </div>
         <div>
-            <label>Description</label>
+            <h3>Description</h3>
             <p th:text="${course.getDescription()}"></p>
         </div>
         <div>
-            <label>Central Content</label>
+            <h3>Central Content</h3>
             <p th:each="cc : ${course.getCentralContent()}" th:text="${cc.content}" th:class="${cc.type}"></p>
         </div>
         <div>

@@ -2,6 +2,7 @@ table p {
     margin: 10px 0 0 0;
     border: 2px solid gray;
     padding: 10px;
+    min-height: 163px;
 }
 .error {
     background-color: pink;
@@ -39,4 +40,7 @@ dt {
 
 th {
     padding: 10px 0 0 10px;
+}
+p.HEADING {
+    font-weight: bold;
 }

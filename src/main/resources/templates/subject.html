@@ -22,7 +22,7 @@
             <span th:text="${subject.getCode()}"></span>
         </div>
         <div>
-            <label>Description</label>
+            <h3>Description</h3>
             <p th:text="${subject.getDescription()}"></p>
         </div>
         <div>
@@ -42,7 +42,10 @@
             <ul>
                 <!--/*@thymesVar id="courses" type="List<com.ist.curriculum.opendataparser.Course>"*/-->
                 <!--/*@thymesVar id="subjectFileName" type="java.lang.String"*/-->
-                <li th:each="course: ${courses}"><a th:href="@{/subject/{subject}/course/{code}(subject=${subjectFileName}, code=${course.getCode()})}" th:text="${course.getName()}"></a> </li>
+                <!--/*@thymesVar id="schoolForm" type="javas.lang.String"*/-->
+                <li th:each="course: ${courses}">
+                    <a th:href="@{/subject/{schoolForm}/{subject}/course/{code}(schoolForm=${schoolForm}, subject=${subjectFileName}, code=${course.getCode()})}" th:text="${course.getName()}"></a>
+                </li>
             </ul>
         </div>
     </div>

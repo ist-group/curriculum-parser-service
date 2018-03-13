@@ -1,31 +1,39 @@
 package com.ist.curriculum.opendataparser.diagostics
 
+import org.edtech.curriculum.CentralContentType
 import org.edtech.curriculum.GradeStep
-import org.edtech.curriculum.SubjectParser
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.io.Resource
-import org.springframework.core.io.ResourceLoader
-import org.springframework.core.io.support.ResourcePatternUtils
+import org.edtech.curriculum.SkolverketFile
 import org.springframework.stereotype.Service
-import java.io.IOException
+import java.io.File
 import java.util.regex.Pattern
 
 @Service
 class DiagnosticsService {
-    @Autowired
-    private var resourceLoader: ResourceLoader? = null
     private val missingDotPattern = Pattern.compile("(\\p{Lower})\\p{Blank}+(Vidare|Eleven|Dessutom)", Pattern.UNICODE_CHARACTER_CLASS)
+    private val tempDir = File(System.getProperty("java.io.tmpdir"))
 
-    @Throws(IOException::class)
-    fun loadResources(pattern: String): Array<Resource> {
-        return ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(pattern)
+    fun getAllCCHeadings(): List<CCHeading> {
+        val result = mutableListOf<CCHeading>()
+        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
+            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+            for (course in subject.courses) {
+                val heading = course.centralContent
+                        ?.filter { it.type == CentralContentType.HEADING }
+                        ?.joinToString(". ") { it.content }
+                        ?: ""
+                if (heading.trim() != "Undervisningen i kursen ska behandla följande centrala innehåll:") {
+                    result.add(CCHeading(subject.name, subject.code, course.name, heading))
+                }
+            }
+        }
+        return result
     }
 
-    fun findMissingDots(): List<KnowledgeRequirementProblem> {
+    /*fun findMissingDots(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(res.file)
-            for (course in subject.getCourses()!!) {
+        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
+            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+            for (course in subject.courses) {
                 val courseParser = subject.getCourseParser(course.code)
                 val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
                 val htmlC = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.C)
@@ -35,7 +43,7 @@ class DiagnosticsService {
                             "Rad på E-nivå saknar .",
                             subject.name,
                             subject.code,
-                            res.filename.removeSuffix(".xml"),
+                            res,
                             course.code,
                             markMissingDots(htmlE),"", ""
                     ))
@@ -45,7 +53,7 @@ class DiagnosticsService {
                             "Rad på C-nivå saknar .",
                             subject.name,
                             subject.code,
-                            res.filename.removeSuffix(".xml"),
+                            res,
                             course.code,
                             "", markMissingDots(htmlC), ""
                     ))
@@ -55,7 +63,7 @@ class DiagnosticsService {
                             "Rad på A-nivå saknar .",
                             subject.name,
                             subject.code,
-                            res.filename.removeSuffix(".xml"),
+                            res,
                             course.code,
                             "","", markMissingDots(htmlA)
                     ))
@@ -64,22 +72,22 @@ class DiagnosticsService {
             }
         }
         return paragraphProblems
-    }
-    fun findParagraphProblems(): List<KnowledgeRequirementProblem> {
+    }*/
+   /* fun findParagraphProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(res.file)
-            for (course in subject.getCourses()!!) {
+        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
+            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+            for (course in subject.courses) {
                 val courseParser = subject.getCourseParser(course.code)
                 val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
                 val htmlC = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.C)
-                val htmlA =courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
+                val htmlA = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
                 if (!paragraphsCountMatches(htmlE, htmlC, htmlA)) {
                     paragraphProblems.add(KnowledgeRequirementProblem(
                             "Olika antal paragrafer mellan E, C och A nivå",
                             subject.name,
                             subject.code,
-                            res.filename.removeSuffix(".xml"),
+                            res,
                             course.code,
                             htmlE, htmlC, htmlA
                     ))
@@ -87,16 +95,15 @@ class DiagnosticsService {
             }
         }
         return paragraphProblems
-    }
+    }*/
 
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(res.file)
-            for (course in subject.getCourses()!!) {
+        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
+            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+            for (course in subject.courses) {
                 // Get the fully parsed course
-                val fullCourse = subject.getCourse(course.code)
-                val knList = fullCourse.knowledgeRequirement
+                val knList = course.knowledgeRequirement
                 val combined: MutableMap<GradeStep, StringBuilder> = HashMap()
                 var missingText = false
                 if (knList != null) {
@@ -121,7 +128,7 @@ class DiagnosticsService {
                                 "Det matchar inte på alla nivåer",
                                 subject.name,
                                 subject.code,
-                                res.filename.removeSuffix(".xml"),
+                                res,
                                 course.code,
                                 combined[GradeStep.E]?.toString()?:"",
                                 combined[GradeStep.C]?.toString()?:"",
@@ -150,12 +157,11 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in loadResources("classpath*:odata/subject/*.xml")) {
-            val subject = SubjectParser(res.file)
-            for (course in subject.getCourses()!!) {
+        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
+            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+            for (course in subject.courses) {
                 // Get the fully parsed course
-                val fullCourse = subject.getCourse(course.code)
-                val knList = fullCourse.knowledgeRequirement
+                val knList = course.knowledgeRequirement
                 var merged = false
                 if (knList != null) {
                     knList
@@ -166,7 +172,7 @@ class DiagnosticsService {
                                 "Hittade ihopslagna meningar",
                                 subject.name,
                                 subject.code,
-                                res.filename.removeSuffix(".xml"),
+                                res,
                                 course.code,
                                 "","",""
                         ))
@@ -179,3 +185,4 @@ class DiagnosticsService {
 }
 
 data class KnowledgeRequirementProblem(val msg: String, val subject:String, val subjectCode:String, val file:String, val courseCode: String, val levelEHtml: String, val levelCHtml: String, val levelAHtml: String)
+data class CCHeading(val subject: String, val subjectCode: String, val course: String, val heading: String)
