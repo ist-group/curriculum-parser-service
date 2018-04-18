@@ -14,39 +14,39 @@
 <body>
 
 <div class="container">
-    <div >
-        <!--/*@thymesVar id="subject" type="com.ist.curriculum.opendataparser.Subject"*/-->
-        <h1 th:text="${subject.getName()}">Subject Name</h1>
-        <div>
-            <label>Code</label>
-            <span th:text="${subject.getCode()}"></span>
-        </div>
-        <div>
-            <h3>Description</h3>
-            <p th:text="${subject.getDescription()}"></p>
-        </div>
-        <div>
-            <h3>Purpose</h3>
-            <!--/*@thymesVar id="purposeSection" type="List<java.lang.String>"*/-->
-            <p th:each="text: ${purposeSection} " th:text="${text}"></p>
-            <!--/*@thymesVar id="purposeHeader" type="java.lang.String"*/-->
-            <h4 th:text="${purposeHeader}"></h4>
-            <ul>
-                <!--/*@thymesVar id="purposeBullets" type="List<java.lang.String>"*/-->
-                <li th:each="purpose: ${purposeBullets}" th:text="${purpose}"></li>
-            </ul>
-        </div>
-        <div>
-            <h3>Courses</h3>
-            <!--/*@thymesVar id="purposeSection" type="List<java.lang.String>"*/-->
-            <ul>
-                <!--/*@thymesVar id="courses" type="List<com.ist.curriculum.opendataparser.Course>"*/-->
-                <!--/*@thymesVar id="subjectFileName" type="java.lang.String"*/-->
-                <!--/*@thymesVar id="schoolForm" type="javas.lang.String"*/-->
-                <li th:each="course: ${courses}">
-                    <a th:href="@{/subject/{schoolForm}/{subject}/course/{code}(schoolForm=${schoolForm}, subject=${subjectFileName}, code=${course.getCode()})}" th:text="${course.getName()}"></a>
-                </li>
-            </ul>
+    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolForm})"></div>
+    <div class="row">
+        <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
+        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolForm)},${subject.getCode()},${schoolForm})"></div>
+        <div class="col-md-9" th:if="${subject != null}">
+            <h1 th:text="${subject.getName()}">Namn</h1>
+            <div>
+                <label>Kod</label>
+                <span th:text="${subject.getCode()}"></span>
+                <a th:href="@{/api/subject/{schoolForm}/{subject}(schoolForm=${schoolForm}, subject=${subject.getCode()})}" target="_blank">Open JSON</a>
+            </div>
+            <div>
+                <h3>Beskrivning</h3>
+                <p th:text="${subject.getDescription()}"></p>
+            </div>
+            <div>
+                <h3>Syfte</h3>
+                <!--/*@thymesVar id="purpose" type="org.edtech.curriculum.Purpose"*/-->
+                <!--/*@thymesVar id="PurposeType" type="org.edtech.curriculum.PurposeType"*/-->
+                <section th:each="purpose: ${subject.getPurposes()}">
+                    <h4 th:if="${purpose.getHeading() != ''}" th:text="${purpose.getHeading()}"></h4>
+                    <p th:if="${purpose.getType().name() == 'PARAGRAPH'}" th:each="purposeLine: ${purpose.getLines()}" th:text="${purposeLine}"></p>
+                    <ul th:if="${purpose.getType().name() == 'BULLET'}">
+                        <li th:each="purposeLine: ${purpose.getLines()}" th:text="${purposeLine}"></li>
+                    </ul>
+                </section>
+            </div>
+            <div>
+                <h3>Kurser / Stadier</h3>
+                <div th:each="course: ${subject.getCourses()}">
+                    <div th:replace="course::course(${course})"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

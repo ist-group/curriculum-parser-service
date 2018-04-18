@@ -12,27 +12,19 @@
 
 </head>
 <body>
-
 <div class="container">
-
-    <div >
-        <h1>LGY11 Parser</h1>
-        <h2>Tools</h2>
-        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
-        <div class="list-group">
-            <a class="list-group-item" th:href="@{/merges}">Lista kunskapskrav med ihopslagna meningar</a>
-            <a class="list-group-item" th:href="@{/problems}">Lista fel</a>
-            <a class="list-group-item" th:href="@{/cc-headings}">Lista rubriker Centralt innehåll</a>
-        </div>
-        <h1>Subjects GY</h1>
-        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
-        <div class="list-group">
-            <a th:each="subject : ${subjectListGY}" class="list-group-item" th:href="@{/subject/GY/{subject}(subject=${subject})}" th:text="${subject}"></a>
-        </div>
-        <h1>Subjects VUXGR</h1>
-        <!--/*@thymesVar id="subjectList" type="List<String>"*/-->
-        <div class="list-group">
-            <a th:each="subject : ${subjectListVUXGR}" class="list-group-item" th:href="@{/subject/VUXGR/{subject}(subject=${subject})}" th:text="${subject}"></a>
+    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolForm})"></div>
+    <div class="row">
+        <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
+        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolForm)},null,${schoolForm})"></div>
+        <div class="col-md-9" >
+            <div class="alert alert-info" role="alert">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Välj ett <strong>ämne</strong>!
+            </div>
+            <blockquote>
+                <p>Sverige skall bli det ledande landet i världen på att utnyttja digitaliseringens möjligheter och effekter i utbildningssystemet.</p>
+                <footer>Regeringen om nationell digitaliseringsstrategi för skolväsendet <cite title="Source Title">Diarienummer: U2017/04119/S</cite></footer>
+            </blockquote>
         </div>
     </div>
 </div>

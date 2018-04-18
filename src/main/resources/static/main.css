@@ -1,4 +1,4 @@
-table p {
+table.diagnostics p {
     margin: 10px 0 0 0;
     border: 2px solid gray;
     padding: 10px;
@@ -7,20 +7,20 @@ table p {
 .error {
     background-color: pink;
 }
-table td {
+table.diagnostics td {
     vertical-align: top;
     width: 33%;
     padding: 10px;
 }
-table {
+table.diagnostics {
     border: 1px solid gray;
     margin-bottom:  10px;
 }
-td + td,
-th + th {
+table.diagnostics td + td,
+table.diagnostics th + th {
     border-left: 1px solid gray;
 }
-th {
+table.diagnostics th {
     border-bottom: 1px solid gray;
     padding:6px;
     background-color: #eeeeee;

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Syllabuses</title>
+</head>
+<div th:fragment="header-menu(syllabuses, selectedSyllabus)">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="#">EdTech Curriculum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li th:each="syllabus: ${syllabuses}" th:class="${syllabus.key == selectedSyllabus ? 'active' : ''}">
+                        <a th:href="@{/subject/{syllabusType}/(syllabusType=${syllabus.key})}" href="#" th:text="${syllabus.key}"></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/merges}">Lista kunskapskrav med ihopslagna meningar</a></li>
+                            <li><a th:href="@{/problems}">Lista fel</a></li>
+                            <li><a th:href="@{/cc-headings}">Lista rubriker Centralt innehåll</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+<body th:fragment="subject-menu(subjects, subjectCode, selectedSyllabus)">
+    <!--div class="panel panel-primary">
+        <div class="panel-heading">Ämnen</div>
+        <div class="panel-body"-->
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" th:class="${subject.getCode() == subjectCode} ? 'active' : ''" th:each="subject : ${subjects}" >
+                    <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
+                    <a th:href="@{/subject/{syllabusType}/{subject}(syllabusType=${selectedSyllabus},subject=${subject.code})}" th:text="${subject.getName()}"></a>
+                </li>
+            </ul>
+        <!--/div>
+    </div-->
+</body>
+</html>

@@ -1,29 +1,25 @@
 package com.ist.curriculum.opendataparser.diagostics
 
-import org.edtech.curriculum.CentralContentType
 import org.edtech.curriculum.GradeStep
-import org.edtech.curriculum.SkolverketFile
+import org.edtech.curriculum.Syllabus
+import org.edtech.curriculum.SyllabusType
 import org.springframework.stereotype.Service
-import java.io.File
 import java.util.regex.Pattern
 
 @Service
 class DiagnosticsService {
     private val missingDotPattern = Pattern.compile("(\\p{Lower})\\p{Blank}+(Vidare|Eleven|Dessutom)", Pattern.UNICODE_CHARACTER_CLASS)
-    private val tempDir = File(System.getProperty("java.io.tmpdir"))
 
     fun getAllCCHeadings(): List<CCHeading> {
         val result = mutableListOf<CCHeading>()
-        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
-            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
             for (course in subject.courses) {
-                val heading = course.centralContent
-                        ?.filter { it.type == CentralContentType.HEADING }
-                        ?.joinToString(". ") { it.content }
-                        ?: ""
-                if (heading.trim() != "Undervisningen i kursen ska behandla följande centrala innehåll:") {
-                    result.add(CCHeading(subject.name, subject.code, course.name, heading))
-                }
+                result.addAll(course.centralContent
+                        .map{ it.heading}
+                        .filter { it.isNotEmpty() }
+                        .filter { it != "Undervisningen i kursen ska behandla följande centrala innehåll:" }
+                        .map { CCHeading(subject.name, subject.code, course.name, it)}
+                )
             }
         }
         return result
@@ -99,42 +95,39 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
-            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirement
                 val combined: MutableMap<GradeStep, StringBuilder> = HashMap()
                 var missingText = false
-                if (knList != null) {
-                    combined[GradeStep.E] = StringBuilder()
-                    combined[GradeStep.C] = StringBuilder()
-                    combined[GradeStep.A] = StringBuilder()
-                    for(kn in knList) {
-                        if (kn.knowledgeRequirementChoice[GradeStep.C]?.isEmpty() != false ||
-                                kn.knowledgeRequirementChoice[GradeStep.A]?.isEmpty() != false) {
-                            missingText = true
-                            combined[GradeStep.E]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
-                            combined[GradeStep.C]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
-                            combined[GradeStep.A]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
-                        } else {
-                            combined[GradeStep.E]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
-                            combined[GradeStep.C]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
-                            combined[GradeStep.A]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
-                        }
+                combined[GradeStep.E] = StringBuilder()
+                combined[GradeStep.C] = StringBuilder()
+                combined[GradeStep.A] = StringBuilder()
+                for(kn in knList) {
+                    if (kn.knowledgeRequirementChoice[GradeStep.C]?.isEmpty() != false ||
+                            kn.knowledgeRequirementChoice[GradeStep.A]?.isEmpty() != false) {
+                        missingText = true
+                        combined[GradeStep.E]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
+                        combined[GradeStep.C]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
+                        combined[GradeStep.A]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
+                    } else {
+                        combined[GradeStep.E]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
+                        combined[GradeStep.C]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
+                        combined[GradeStep.A]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
                     }
-                    if (missingText) {
-                        paragraphProblems.add(KnowledgeRequirementProblem(
-                                "Det matchar inte på alla nivåer",
-                                subject.name,
-                                subject.code,
-                                res,
-                                course.code,
-                                combined[GradeStep.E]?.toString()?:"",
-                                combined[GradeStep.C]?.toString()?:"",
-                                combined[GradeStep.A]?.toString()?:""
-                        ))
-                    }
+                }
+                if (missingText) {
+                    paragraphProblems.add(KnowledgeRequirementProblem(
+                            "Det matchar inte på alla nivåer",
+                            subject.name,
+                            subject.code,
+                            "",
+                            course.code,
+                            combined[GradeStep.E]?.toString()?:"",
+                            combined[GradeStep.C]?.toString()?:"",
+                            combined[GradeStep.A]?.toString()?:""
+                    ))
                 }
             }
         }
@@ -157,26 +150,23 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
-            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
+        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirement
                 var merged = false
-                if (knList != null) {
-                    knList
-                            .filter { kn -> kn.knowledgeRequirementChoice.count { it.value.count { c -> c == '.' } > 1 } > 0 }
-                            .forEach { merged = true }
-                    if (merged) {
-                        paragraphProblems.add(KnowledgeRequirementProblem(
-                                "Hittade ihopslagna meningar",
-                                subject.name,
-                                subject.code,
-                                res,
-                                course.code,
-                                "","",""
-                        ))
-                    }
+                knList
+                        .filter { kn -> kn.knowledgeRequirementChoice.count { it.value.count { c -> c == '.' } > 1 } > 0 }
+                        .forEach { merged = true }
+                if (merged) {
+                    paragraphProblems.add(KnowledgeRequirementProblem(
+                            "Hittade ihopslagna meningar",
+                            subject.name,
+                            subject.code,
+                            "",
+                            course.code,
+                            "","",""
+                    ))
                 }
             }
         }

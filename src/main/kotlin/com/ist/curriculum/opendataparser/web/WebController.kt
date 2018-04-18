@@ -1,54 +1,48 @@
 package com.ist.curriculum.opendataparser.web
 import com.ist.curriculum.opendataparser.diagostics.DiagnosticsService
 import com.ist.curriculum.opendataparser.diagostics.KnowledgeRequirementProblem
-import org.edtech.curriculum.Course
-import org.edtech.curriculum.PurposeType
-import org.edtech.curriculum.SkolverketFile
+import org.edtech.curriculum.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import java.io.File
 
+
+data class NameAndCode(val name: String,val code: String)
 
 @Controller
 class WebController(@Autowired
-                    private val diagnosticsService: DiagnosticsService) {
+                    private val diagnosticsService: DiagnosticsService,
+                    @Autowired
+                    private val syllabusService: SyllabusService) {
 
-    val tempDir = File(System.getProperty("java.io.tmpdir"))
+    val subjectNamesPerSchoolForm: Map<SyllabusType, List<NameAndCode>> = SyllabusType.values()
+            .map {
+                Pair(it, syllabusService.getSubjects(it).map { NameAndCode(it.name, it.code) }.toList())
+            }.toMap()
 
     @GetMapping("/")
     fun courseList(model: MutableMap<String, Any>): String {
-        model["subjectListGY"] = SkolverketFile.GY.subjectNames(tempDir)
-        model["subjectListVUXGR"] = SkolverketFile.VUXGR.subjectNames(tempDir)
+        model["syllabuses"] = subjectNamesPerSchoolForm
+        model["schoolForm"] = SyllabusType.GR
         return "subject_list"
     }
 
-    @GetMapping("/subject/{schoolForm}/{subjectName}")
-    fun courses(@PathVariable schoolForm: SkolverketFile, @PathVariable subjectName: String, model: MutableMap<String, Any>): String {
+    @GetMapping("/subject/{schoolForm}")
+    fun subjects(@PathVariable schoolForm: SyllabusType, model: MutableMap<String, Any>): String {
         // Parse Subject XMl Structure
-        val subjectParser = schoolForm.openSubject(subjectName, tempDir)
-        val subject = subjectParser.getSubject()
-        model["schoolForm"] = schoolForm.name
-        model["subjectFileName"] = subjectName
-        model["subject"] = subject
-        model["purposeSection"] = subject.purposes.filter { it.type == PurposeType.SECTION }.map{ it.content }
-        model["purposeHeader"] = subject.purposes.filter { it.type == PurposeType.HEADING }.joinToString { it.content }
-        model["purposeBullets"] = subject.purposes.filter { it.type == PurposeType.BULLET }.map { it.content }
-        model["courses"] = subjectParser.getSubject().courses
-        return "subject"
+        model["syllabuses"] = subjectNamesPerSchoolForm
+        model["schoolForm"] = schoolForm
+        return "subject_list"
     }
 
-    @GetMapping("/subject/{schoolForm}/{subjectName}/course/{code}")
-    fun course(@PathVariable schoolForm: SkolverketFile, @PathVariable subjectName: String, @PathVariable code: String, model: MutableMap<String, Any>): String {
+    @GetMapping("/subject/{schoolForm}/{subjectCode}")
+    fun subject(@PathVariable schoolForm: SyllabusType, @PathVariable subjectCode: String, model: MutableMap<String, Any>): String {
         // Parse Subject XMl Structure
-        val subjectParser = schoolForm.openSubject(subjectName, tempDir)
-        // Lookup course with correct code
-        model["schoolForm"] = schoolForm.name
-        model["subjectFileName"] = subjectName
-        model["subject"] = subjectParser.getSubject()
-        model["course"] = subjectParser.getSubject().courses.firstOrNull { it.code == code } ?: Course("No course extracted", "", "error", 0)
-        return "course"
+        model["subject"] = syllabusService.getSubject(schoolForm, subjectCode)
+        model["schoolForm"] = schoolForm
+        model["syllabuses"] = subjectNamesPerSchoolForm
+        return "subject"
     }
 
     @GetMapping("/problems")

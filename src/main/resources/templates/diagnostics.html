@@ -19,7 +19,7 @@
     <div th:unless="${dotProblems.isEmpty()}">
         <h2>KnowledgeRequirement missing dot problems</h2>
 
-        <table th:each="courseProblem : ${dotProblems}">
+        <table th:each="courseProblem : ${dotProblems}" class="diagnostics">
             <tr>
                 <!--/*@thymesVar id="courseProblem" type="com.ist.curriculum.opendataparser.diagostics.KnowledgeRequirementProblem"*/-->
                 <th colspan="3" >

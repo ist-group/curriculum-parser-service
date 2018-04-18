@@ -13,36 +13,35 @@
 </head>
 <body>
 
-<div class="container">
-    <div >
-        <!--/*@thymesVar id="subject" type="com.ist.curriculum.opendataparser.Subject"*/-->
-        <!--/*@thymesVar id="course" type="com.ist.curriculum.opendataparser.Course"*/-->
-        <h1 th:text="|${subject.getName()} / ${course.getName()}|">Subject Name / Course</h1>
-        <div>
-            <label>Code</label>
-            <span th:text="${course.getCode()}"></span>
-            <a th:href="@{/api/subject/{schoolForm}/{subject}/course/{code}(schoolForm=${schoolForm}, subject=${subjectFileName}, code=${course.getCode()})}" target="_blank">Open JSON</a>
-        </div>
-        <div>
-            <h3>Description</h3>
-            <p th:text="${course.getDescription()}"></p>
-        </div>
-        <div>
-            <h3>Central Content</h3>
-            <p th:each="cc : ${course.getCentralContent()}" th:text="${cc.content}" th:class="${cc.type}"></p>
-        </div>
-        <div>
-            <h3>Knowledge Requirements</h3>
-            <table class="table">
-                <tr>
-                    <th>Betyget E</th>
-                    <th>Betyget C</th>
-                    <th>Betyget A</th>
-                </tr>
-                <tr th:each="kr : ${course.getKnowledgeRequirement()}">
-                    <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
-                </tr>
-            </table>
+<!--/*@thymesVar id="courseItem" type="org.edtech.curriculum.Course"*/-->
+<div class="container" >
+    <div th:fragment="course(courseItem)" class="panel panel-primary">
+        <div class="panel-heading" th:text="|[${courseItem.getName()}] ${courseItem.getName()}|">[kod] Ämne</div>
+        <div class="panel-body">
+            <div th:if="${courseItem.getDescription()} != ''">
+                <h3>Beskrivning</h3>
+                <p th:text="${courseItem.getDescription()}"></p>
+            </div>
+            <div>
+                <h3>Centralt innehåll</h3>
+                <th:block th:each="cc : ${courseItem.getCentralContent()}">
+                    <h4 th:text="${cc.getHeading()}"></h4>
+                    <ul><li th:each="line: ${cc.getLines()}" th:text="${line}"></li></ul>
+                </th:block>
+            </div>
+            <div>
+                <h3>Kunskapskrav</h3>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Betyget E</th>
+                        <th>Betyget C</th>
+                        <th>Betyget A</th>
+                    </tr>
+                    <tr th:each="kr : ${courseItem.getKnowledgeRequirement()}">
+                        <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
