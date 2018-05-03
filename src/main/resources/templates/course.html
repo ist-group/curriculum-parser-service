@@ -16,7 +16,7 @@
 <!--/*@thymesVar id="courseItem" type="org.edtech.curriculum.Course"*/-->
 <div class="container" >
     <div th:fragment="course(courseItem)" class="panel panel-primary">
-        <div class="panel-heading" th:text="|[${courseItem.getName()}] ${courseItem.getName()}|">[kod] Ämne</div>
+        <div class="panel-heading" th:text="|[${courseItem.getCode()}] ${courseItem.getName()}|">[kod] Ämne</div>
         <div class="panel-body">
             <div th:if="${courseItem.getDescription()} != ''">
                 <h3>Beskrivning</h3>

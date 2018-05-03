@@ -2,7 +2,7 @@
 
 This is a tool for displaying parsed data from the public open data from [opendata.skolverket.se](http://opendata.skolverket.se/)
 
-The actual parser is located in this [github project](https://github.com/stefan-jonasson/curriculum-parser-service) 
+The actual parser is located in this [github project](https://github.com/stefan-jonasson/curriculum-parser) 
 
 The service both contains HTML views for the data as well as an API for delivering it in JSON format.
 The api is reachable from the following urls: 
@@ -22,5 +22,7 @@ You can download released versions and nightly build artifacts from: https://gra
 To build an executable jar type: `gradlew jar`
 
 To run directly from source type: `gradlew bootRun` 
+
+Set the property `curriculum.files_dir=<workdir>` to control where the curriculum files should be downloaded to or if you want to use a fixed version of the data.
 
 To use the service open http://localhost:8088
