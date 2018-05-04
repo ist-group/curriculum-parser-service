@@ -43,6 +43,6 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
 	compile('org.webjars:bootstrap:3.1.1-1')
     compile("com.github.stefan-jonasson:curriculum-parser:0.2.1")
-	runtime('org.springframework.boot:spring-boot-devtools')
+    compile('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
