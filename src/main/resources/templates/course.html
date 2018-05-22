@@ -8,7 +8,7 @@
           href="/webjars/bootstrap/3.1.1/css/bootstrap.min.css" />
 
     <link rel="stylesheet" th:href="@{/main.css}"
-          href="/main.css" />
+          href="/static/main.css" />
 
 </head>
 <body>
@@ -31,15 +31,20 @@
             </div>
             <div>
                 <h3>Kunskapskrav</h3>
-                <table class="table table-striped">
+                <table class="table table-bordered">
                     <tr>
                         <th>Betyget E</th>
                         <th>Betyget C</th>
                         <th>Betyget A</th>
                     </tr>
-                    <tr th:each="kr : ${courseItem.getKnowledgeRequirement()}">
-                        <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
-                    </tr>
+                    <th:block th:each="krp, iterStats: ${courseItem.getKnowledgeRequirementParagraphs()}">
+                        <tr th:each="kr : ${krp.getKnowledgeRequirements()}">
+                            <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
+                        </tr>
+                        <tr>
+                            <th th:unless="${iterStats.last}" colspan="3" class="divider"></th>
+                        </tr>
+                    </th:block>
                 </table>
             </div>
         </div>
@@ -48,7 +53,7 @@
 <!-- /.container -->
 
 <script type="text/javascript"
-        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        src="/webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>

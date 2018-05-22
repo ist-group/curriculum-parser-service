@@ -4,12 +4,9 @@ import org.edtech.curriculum.GradeStep
 import org.edtech.curriculum.Syllabus
 import org.edtech.curriculum.SyllabusType
 import org.springframework.stereotype.Service
-import java.util.regex.Pattern
 
 @Service
 class DiagnosticsService {
-    private val missingDotPattern = Pattern.compile("(\\p{Lower})\\p{Blank}+(Vidare|Eleven|Dessutom)", Pattern.UNICODE_CHARACTER_CLASS)
-
     fun getAllCCHeadings(): List<CCHeading> {
         val result = mutableListOf<CCHeading>()
         for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
@@ -25,97 +22,31 @@ class DiagnosticsService {
         return result
     }
 
-    /*fun findMissingDots(): List<KnowledgeRequirementProblem> {
-        val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
-            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
-            for (course in subject.courses) {
-                val courseParser = subject.getCourseParser(course.code)
-                val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
-                val htmlC = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.C)
-                val htmlA = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
-                if (hasMissingDots(htmlE)) {
-                    paragraphProblems.add(KnowledgeRequirementProblem(
-                            "Rad på E-nivå saknar .",
-                            subject.name,
-                            subject.code,
-                            res,
-                            course.code,
-                            markMissingDots(htmlE),"", ""
-                    ))
-                }
-                if (hasMissingDots(htmlC)) {
-                    paragraphProblems.add(KnowledgeRequirementProblem(
-                            "Rad på C-nivå saknar .",
-                            subject.name,
-                            subject.code,
-                            res,
-                            course.code,
-                            "", markMissingDots(htmlC), ""
-                    ))
-                }
-                if (hasMissingDots(htmlA)) {
-                    paragraphProblems.add(KnowledgeRequirementProblem(
-                            "Rad på A-nivå saknar .",
-                            subject.name,
-                            subject.code,
-                            res,
-                            course.code,
-                            "","", markMissingDots(htmlA)
-                    ))
-                }
-
-            }
-        }
-        return paragraphProblems
-    }*/
-   /* fun findParagraphProblems(): List<KnowledgeRequirementProblem> {
-        val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (res in SkolverketFile.GY.subjectNames(tempDir)) {
-            val subject = SkolverketFile.GY.openSubject(res, tempDir).getSubject()
-            for (course in subject.courses) {
-                val courseParser = subject.getCourseParser(course.code)
-                val htmlE = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.E)
-                val htmlC = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.C)
-                val htmlA = courseParser.extractKnowledgeRequirementForGradeStep(GradeStep.A)
-                if (!paragraphsCountMatches(htmlE, htmlC, htmlA)) {
-                    paragraphProblems.add(KnowledgeRequirementProblem(
-                            "Olika antal paragrafer mellan E, C och A nivå",
-                            subject.name,
-                            subject.code,
-                            res,
-                            course.code,
-                            htmlE, htmlC, htmlA
-                    ))
-                }
-            }
-        }
-        return paragraphProblems
-    }*/
-
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
-                val knList = course.knowledgeRequirement
+                val knList = course.knowledgeRequirementParagraphs
                 val combined: MutableMap<GradeStep, StringBuilder> = HashMap()
                 var missingText = false
                 combined[GradeStep.E] = StringBuilder()
                 combined[GradeStep.C] = StringBuilder()
                 combined[GradeStep.A] = StringBuilder()
-                for(kn in knList) {
-                    if (kn.knowledgeRequirementChoice[GradeStep.C]?.isEmpty() != false ||
-                            kn.knowledgeRequirementChoice[GradeStep.A]?.isEmpty() != false) {
-                        missingText = true
-                        combined[GradeStep.E]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
-                        combined[GradeStep.C]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
-                        combined[GradeStep.A]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
-                    } else {
-                        combined[GradeStep.E]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
-                        combined[GradeStep.C]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
-                        combined[GradeStep.A]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
-                    }
+                for(knp in knList) {
+                   for(kn in knp.knowledgeRequirements) {
+                       if (kn.knowledgeRequirementChoice[GradeStep.C]?.isEmpty() != false ||
+                               kn.knowledgeRequirementChoice[GradeStep.A]?.isEmpty() != false) {
+                           missingText = true
+                           combined[GradeStep.E]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
+                           combined[GradeStep.C]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
+                           combined[GradeStep.A]?.append("<p class='error'>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
+                       } else {
+                           combined[GradeStep.E]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.E]}</p>")
+                           combined[GradeStep.C]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.C]}</p>")
+                           combined[GradeStep.A]?.append("<p>${kn.knowledgeRequirementChoice[GradeStep.A]}</p>")
+                       }
+                   }
                 }
                 if (missingText) {
                     paragraphProblems.add(KnowledgeRequirementProblem(
@@ -134,28 +65,14 @@ class DiagnosticsService {
         return paragraphProblems
     }
 
-    private fun hasMissingDots(text: String): Boolean {
-        return missingDotPattern.matcher(text).find()
-    }
-    private fun markMissingDots(text: String): String {
-        return missingDotPattern.matcher(text).replaceAll("<span class=\"missing\">$1 $2</span>")
-    }
-
-    fun countParagraphs(s: String): Int = s.split(Regex("<p>")).size - 1
-
-    private fun paragraphsCountMatches(htmlE: String, htmlC: String, htmlA: String): Boolean {
-        val countE = countParagraphs(htmlE)
-        return countE == countParagraphs(htmlC) &&  countE == countParagraphs(htmlA)
-    }
-
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
         for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
-                val knList = course.knowledgeRequirement
+                val knList = course.knowledgeRequirementParagraphs
                 var merged = false
-                knList
+                knList.flatMap { it.knowledgeRequirements }
                         .filter { kn -> kn.knowledgeRequirementChoice.count { it.value.count { c -> c == '.' } > 1 } > 0 }
                         .forEach { merged = true }
                 if (merged) {
