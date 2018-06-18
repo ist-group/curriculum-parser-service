@@ -18,7 +18,10 @@ class WebController(@Autowired
 
     val subjectNamesPerSchoolForm: Map<SyllabusType, List<NameAndCode>> = SyllabusType.values()
             .map {
-                Pair(it, syllabusService.getSubjects(it).map { NameAndCode(it.name, it.code) }.toList())
+                Pair(it, syllabusService.getSubjects(it)
+                        .map { NameAndCode(it.name, it.code) }
+                        .sortedBy { it.name }
+                        .toList())
             }.toMap()
 
     @GetMapping("/")
