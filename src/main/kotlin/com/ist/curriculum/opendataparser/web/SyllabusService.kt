@@ -1,27 +1,27 @@
 package com.ist.curriculum.opendataparser.web
 
 import org.edtech.curriculum.Subject
-import org.edtech.curriculum.Syllabus
-import org.edtech.curriculum.SyllabusType
+import org.edtech.curriculum.Curriculum
+import org.edtech.curriculum.SchoolType
 import org.springframework.stereotype.Service
 import java.io.File
 import javax.ws.rs.NotFoundException
 
 @Service
-class SyllabusService {
-    val data = SyllabusType.values().mapNotNull {
+class CurriculumService {
+    val data = SchoolType.values().mapNotNull {
         try {
-            Pair(it, Syllabus(it, File(System.getProperty("curriculum.files_dir", System.getProperty("java.io.tmpdir")))).getSubjects())
+            Pair(it, Curriculum(it, File(System.getProperty("curriculum.files_dir", System.getProperty("java.io.tmpdir")))).getSubjects())
         } catch (e:IllegalArgumentException) {
             null
         }
     }.toMap()
 
-    fun getSubject(syllabusType: SyllabusType, subjectCode: String): Subject {
-        return data[syllabusType]?.firstOrNull { it.code == subjectCode }
+    fun getSubject(schoolType: SchoolType, subjectCode: String): Subject {
+        return data[schoolType]?.firstOrNull { it.code == subjectCode }
                 ?: throw NotFoundException("Subject not found: $subjectCode")
     }
-    fun getSubjects(syllabusType: SyllabusType): List<Subject> {
-        return data[syllabusType] ?: throw NotFoundException("Syllabus type not found: $syllabusType")
+    fun getSubjects(schoolType: SchoolType): List<Subject> {
+        return data[schoolType] ?: throw NotFoundException("School type not found: $schoolType")
     }
 }

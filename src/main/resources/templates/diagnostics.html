@@ -33,7 +33,7 @@
                         <dd>Course Code</dd>
                         <dt th:text="${courseProblem.courseCode}"></dt>
                     </dl>
-                    <a th:href="@{/subject/{schoolForm}/{subjectFileName}/course/{code}(schoolForm=${schoolForm},subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open JSON</a>
+                    <a th:href="@{/subject/{schoolType}/{subjectFileName}/course/{code}(schoolType=${schoolType},subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open JSON</a>
                 </th>
             </tr>
             <tr>
@@ -60,8 +60,8 @@
                         <dd>Course Code</dd>
                         <dt th:text="${courseProblem.courseCode}"></dt>
                     </dl>
-                    <a th:href="@{/subject/{schoolForm}/{subjectFileName}/course/{code}(schoolForm=${schoolForm}, subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open Course</a>
-                    <a th:href="@{/api/subject/{schoolForm}/{subjectFileName}/course/{code}(schoolForm=${schoolForm}, subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open JSON</a>
+                    <a th:href="@{/subject/{schoolType}/{subjectFileName}/course/{code}(schoolType=${schoolType}, subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open Course</a>
+                    <a th:href="@{/api/subject/{schoolType}/{subjectFileName}/course/{code}(schoolType=${schoolType}, subjectFileName=${courseProblem.file},code=${courseProblem.courseCode})}" target="_blank">Open JSON</a>
                 </th>
             </tr>
             <tr>

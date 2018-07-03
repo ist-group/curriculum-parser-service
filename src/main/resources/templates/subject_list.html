@@ -13,10 +13,10 @@
 </head>
 <body>
 <div class="container">
-    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolForm})"></div>
+    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolType})"></div>
     <div class="row">
         <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
-        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolForm)},null,${schoolForm})"></div>
+        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolType)},null,${schoolType})"></div>
         <div class="col-md-9" >
             <div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Välj ett <strong>ämne</strong>!

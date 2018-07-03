@@ -1,15 +1,15 @@
 package com.ist.curriculum.opendataparser.diagostics
 
 import org.edtech.curriculum.GradeStep
-import org.edtech.curriculum.Syllabus
-import org.edtech.curriculum.SyllabusType
+import org.edtech.curriculum.Curriculum
+import org.edtech.curriculum.SchoolType
 import org.springframework.stereotype.Service
 
 @Service
 class DiagnosticsService {
     fun getAllCCHeadings(): List<CCHeading> {
         val result = mutableListOf<CCHeading>()
-        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
             for (course in subject.courses) {
                 result.addAll(course.centralContent
                         .map{ it.heading}
@@ -24,7 +24,7 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirementParagraphs
@@ -67,7 +67,7 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (subject in Syllabus(SyllabusType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirementParagraphs
