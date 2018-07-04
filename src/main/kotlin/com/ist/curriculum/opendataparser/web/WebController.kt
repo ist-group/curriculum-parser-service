@@ -14,11 +14,11 @@ data class NameAndCode(val name: String,val code: String)
 class WebController(@Autowired
                     private val diagnosticsService: DiagnosticsService,
                     @Autowired
-                    private val syllabusService: SyllabusService) {
+                    private val curriculumService: CurriculumService) {
 
-    val subjectNamesPerSchoolForm: Map<SyllabusType, List<NameAndCode>> = SyllabusType.values()
+    val subjectNamesPerSchoolForm: Map<SchoolType, List<NameAndCode>> = SchoolType.values()
             .map {
-                Pair(it, syllabusService.getSubjects(it)
+                Pair(it, curriculumService.getSubjects(it)
                         .map { NameAndCode(it.name, it.code) }
                         .sortedBy { it.name }
                         .toList())
@@ -27,30 +27,30 @@ class WebController(@Autowired
     @GetMapping("/")
     fun courseList(model: MutableMap<String, Any>): String {
         model["syllabuses"] = subjectNamesPerSchoolForm
-        model["schoolForm"] = SyllabusType.GR
+        model["schoolType"] = SchoolType.GR
         return "subject_list"
     }
 
-    @GetMapping("/subject/{schoolForm}")
-    fun subjects(@PathVariable schoolForm: SyllabusType, model: MutableMap<String, Any>): String {
+    @GetMapping("/subject/{schoolType}")
+    fun subjects(@PathVariable schoolType: SchoolType, model: MutableMap<String, Any>): String {
         // Parse Subject XMl Structure
         model["syllabuses"] = subjectNamesPerSchoolForm
-        model["schoolForm"] = schoolForm
+        model["schoolType"] = schoolType
         return "subject_list"
     }
 
-    @GetMapping("/subject/{schoolForm}/{subjectCode}")
-    fun subject(@PathVariable schoolForm: SyllabusType, @PathVariable subjectCode: String, model: MutableMap<String, Any>): String {
+    @GetMapping("/subject/{schoolType}/{subjectCode}")
+    fun subject(@PathVariable schoolType: SchoolType, @PathVariable subjectCode: String, model: MutableMap<String, Any>): String {
         // Parse Subject XMl Structure
-        model["subject"] = syllabusService.getSubject(schoolForm, subjectCode)
-        model["schoolForm"] = schoolForm
+        model["subject"] = curriculumService.getSubject(schoolType, subjectCode)
+        model["schoolType"] = schoolType
         model["syllabuses"] = subjectNamesPerSchoolForm
         return "subject"
     }
 
     @GetMapping("/problems")
     fun problems(model: MutableMap<String, Any>): String {
-        model["schoolForm"] = "GY"
+        model["schoolType"] = "GY"
         model["dotProblems"] = listOf<KnowledgeRequirementProblem>() //diagnosticsService.findMissingDots()
         model["matchProblems"] = diagnosticsService.findKnowledgeRequirementMatchProblems()
         return "diagnostics"
@@ -64,7 +64,7 @@ class WebController(@Autowired
 
     @GetMapping("/merges")
     fun merges(model: MutableMap<String, Any>): String {
-        model["schoolForm"] = "GY"
+        model["schoolType"] = "GY"
         model["dotProblems"] = listOf<KnowledgeRequirementProblem>()
         model["matchProblems"] = diagnosticsService.findKnowledgeRequirementMerges()
         return "diagnostics"

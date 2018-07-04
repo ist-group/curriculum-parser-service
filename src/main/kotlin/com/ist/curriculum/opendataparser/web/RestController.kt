@@ -11,21 +11,21 @@ import javax.ws.rs.NotFoundException
 @RestController
 @RequestMapping("api")
 class RestController (@Autowired
-                      private val syllabusService: SyllabusService){
+                      private val curriculumService: CurriculumService){
 
-    @GetMapping("/subject/{schoolForm}/{subjectName}")
-    fun subject(@PathVariable schoolForm: SyllabusType, @PathVariable subjectName: String): Subject {
-        return syllabusService.getSubject(schoolForm, subjectName)
+    @GetMapping("/subject/{schoolType}/{subjectName}")
+    fun subject(@PathVariable schoolType: SchoolType, @PathVariable subjectName: String): Subject {
+        return curriculumService.getSubject(schoolType, subjectName)
     }
 
-    @GetMapping("/subject/{schoolForm}/{subjectName}/courses")
-    fun courses(@PathVariable schoolForm: SyllabusType, @PathVariable subjectName: String): List<Course> {
-        return  syllabusService.getSubject(schoolForm, subjectName).courses
+    @GetMapping("/subject/{schoolType}/{subjectName}/courses")
+    fun courses(@PathVariable schoolType: SchoolType, @PathVariable subjectName: String): List<Course> {
+        return  curriculumService.getSubject(schoolType, subjectName).courses
     }
 
-    @GetMapping("/subject/{schoolForm}/{subjectName}/course/{code}")
-    fun course(@PathVariable schoolForm: SyllabusType, @PathVariable subjectName: String, @PathVariable code: String): Course {
-        return  syllabusService.getSubject(schoolForm, subjectName)
+    @GetMapping("/subject/{schoolType}/{subjectName}/course/{code}")
+    fun course(@PathVariable schoolType: SchoolType, @PathVariable subjectName: String, @PathVariable code: String): Course {
+        return  curriculumService.getSubject(schoolType, subjectName)
                 .courses.firstOrNull { it.code == code }
                     ?: throw NotFoundException("Course $code not found in subject $subjectName")
     }

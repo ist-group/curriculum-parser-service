@@ -19,7 +19,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li th:each="syllabus: ${syllabuses}" th:class="${syllabus.key == selectedSyllabus ? 'active' : ''}">
-                        <a th:href="@{/subject/{syllabusType}/(syllabusType=${syllabus.key})}" href="#" th:text="${syllabus.key}"></a>
+                        <a th:href="@{/subject/{schoolType}/(schoolType=${syllabus.key})}" href="#" th:text="${syllabus.key}"></a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
@@ -41,7 +41,7 @@
             <ul class="nav nav-pills nav-stacked">
                 <li role="presentation" th:class="${subject.getCode() == subjectCode} ? 'active' : ''" th:each="subject : ${subjects}" >
                     <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
-                    <a th:href="@{/subject/{syllabusType}/{subject}(syllabusType=${selectedSyllabus},subject=${subject.code})}" th:text="${subject.getName()}"></a>
+                    <a th:href="@{/subject/{schoolType}/{subject}(schoolType=${selectedSyllabus},subject=${subject.code})}" th:text="${subject.getName()}"></a>
                 </li>
             </ul>
         <!--/div>

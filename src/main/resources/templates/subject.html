@@ -14,16 +14,16 @@
 <body>
 
 <div class="container">
-    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolForm})"></div>
+    <div th:include="fragments/menu::header-menu(${syllabuses},${schoolType})"></div>
     <div class="row">
         <!--/*@thymesVar id="subject" type="org.edtech.curriculum.Subject"*/-->
-        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolForm)},${subject.getCode()},${schoolForm})"></div>
+        <div class="col-md-3" th:include="fragments/menu::subject-menu(${syllabuses.get(schoolType)},${subject.getCode()},${schoolType})"></div>
         <div class="col-md-9" th:if="${subject != null}">
             <h1 th:text="${subject.getName()}">Namn</h1>
             <div>
                 <label>Kod</label>
                 <span th:text="${subject.getCode()}"></span>
-                <a th:href="@{/api/subject/{schoolForm}/{subject}(schoolForm=${schoolForm}, subject=${subject.getCode()})}" target="_blank">Open JSON</a>
+                <a th:href="@{/api/subject/{schoolType}/{subject}(schoolType=${schoolType}, subject=${subject.getCode()})}" target="_blank">Open JSON</a>
             </div>
             <div>
                 <h3>Beskrivning</h3>
