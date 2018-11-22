@@ -11,7 +11,7 @@ import javax.ws.rs.NotFoundException
 class CurriculumService {
     val data = SchoolType.values().mapNotNull {
         try {
-            Pair(it, Curriculum(it, File(System.getProperty("curriculum.files_dir", System.getProperty("java.io.tmpdir")))).getSubjects())
+            Pair(it, Curriculum(it, File(System.getProperty("curriculum.files_dir", System.getProperty("java.io.tmpdir")))).subjects)
         } catch (e:IllegalArgumentException) {
             null
         }

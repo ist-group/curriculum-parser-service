@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class DiagnosticsService {
     fun getAllCCHeadings(): List<CCHeading> {
         val result = mutableListOf<CCHeading>()
-        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).subjects) {
             for (course in subject.courses) {
                 result.addAll(course.centralContent
                         .map{ it.heading}
@@ -24,7 +24,7 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMatchProblems(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).subjects) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirementParagraphs
@@ -67,7 +67,7 @@ class DiagnosticsService {
 
     fun findKnowledgeRequirementMerges(): List<KnowledgeRequirementProblem> {
         val paragraphProblems = mutableListOf<KnowledgeRequirementProblem>()
-        for (subject in Curriculum(SchoolType.GY).getSubjects()) {
+        for (subject in Curriculum(SchoolType.GY).subjects) {
             for (course in subject.courses) {
                 // Get the fully parsed course
                 val knList = course.knowledgeRequirementParagraphs
