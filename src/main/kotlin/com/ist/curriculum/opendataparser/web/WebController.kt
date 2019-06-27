@@ -1,6 +1,4 @@
 package com.ist.curriculum.opendataparser.web
-import com.ist.curriculum.opendataparser.diagostics.DiagnosticsService
-import com.ist.curriculum.opendataparser.diagostics.KnowledgeRequirementProblem
 import org.edtech.curriculum.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -12,8 +10,6 @@ data class NameAndCode(val name: String,val code: String)
 
 @Controller
 class WebController(@Autowired
-                    private val diagnosticsService: DiagnosticsService,
-                    @Autowired
                     private val curriculumService: CurriculumService) {
 
     val subjectNamesPerSchoolForm: Map<SchoolType, List<NameAndCode>> = SchoolType.values()
@@ -48,25 +44,4 @@ class WebController(@Autowired
         return "subject"
     }
 
-    @GetMapping("/problems")
-    fun problems(model: MutableMap<String, Any>): String {
-        model["schoolType"] = "GY"
-        model["dotProblems"] = listOf<KnowledgeRequirementProblem>() //diagnosticsService.findMissingDots()
-        model["matchProblems"] = diagnosticsService.findKnowledgeRequirementMatchProblems()
-        return "diagnostics"
-    }
-
-    @GetMapping("/cc-headings")
-    fun ccHeadings(model: MutableMap<String, Any>): String {
-        model["headings"] = diagnosticsService.getAllCCHeadings()
-        return "cc-headings"
-    }
-
-    @GetMapping("/merges")
-    fun merges(model: MutableMap<String, Any>): String {
-        model["schoolType"] = "GY"
-        model["dotProblems"] = listOf<KnowledgeRequirementProblem>()
-        model["matchProblems"] = diagnosticsService.findKnowledgeRequirementMerges()
-        return "diagnostics"
-    }
 }

@@ -31,13 +31,19 @@
             </div>
             <div>
                 <h3>Kunskapskrav</h3>
-                <table class="table table-bordered">
+                <table class="table table-bordered" style="border: none;">
                     <tr>
                         <th>Betyget E</th>
                         <th>Betyget C</th>
                         <th>Betyget A</th>
                     </tr>
                     <th:block th:each="krp, iterStats: ${courseItem.getKnowledgeRequirementParagraphs()}">
+                        <tr class="section-heading" th:unless="${krp.getHeading() == null}">
+                            <td colspan="3">
+                                <h4  th:utext="${krp.getHeading()}"></h4>
+                                <p th:utext="${krp.getDescription()}"></p>
+                            </td>
+                        </tr>
                         <tr th:each="kr : ${krp.getKnowledgeRequirements()}">
                             <td th:each="choice : ${kr.knowledgeRequirementChoice}" th:utext="${choice.value}" th:class="${choice.value.isEmpty()} ? 'error' : ''"></td>
                         </tr>
