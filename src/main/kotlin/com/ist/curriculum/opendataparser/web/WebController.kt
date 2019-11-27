@@ -12,6 +12,11 @@ data class NameAndCode(val name: String,val code: String)
 class WebController(@Autowired
                     private val curriculumService: CurriculumService) {
 
+    val schoolFormsPerOperations: Map<String, List<SchoolType>> = mapOf(
+        "GR" to listOf(SchoolType.GR, SchoolType.GRS, SchoolType.GRSAM, SchoolType.GRSPEC, SchoolType.GRSSPEC, SchoolType.SPEC),
+        "GY" to listOf(SchoolType.GY, SchoolType.GYS, SchoolType.GYS_SUBJECT_AREA),
+        "VUX" to listOf(SchoolType.VUXGR, SchoolType.VUXGRS, SchoolType.SFI))
+
     val subjectNamesPerSchoolForm: Map<SchoolType, List<NameAndCode>> = SchoolType.values()
             .map {
                 Pair(it, curriculumService.getSubjects(it)
@@ -23,6 +28,7 @@ class WebController(@Autowired
     @GetMapping("/")
     fun courseList(model: MutableMap<String, Any>): String {
         model["syllabuses"] = subjectNamesPerSchoolForm
+        model["gropedSchoolForms"] = schoolFormsPerOperations
         model["schoolType"] = SchoolType.GR
         return "subject_list"
     }
@@ -31,7 +37,9 @@ class WebController(@Autowired
     fun subjects(@PathVariable schoolType: SchoolType, model: MutableMap<String, Any>): String {
         // Parse Subject XMl Structure
         model["syllabuses"] = subjectNamesPerSchoolForm
+        model["gropedSchoolForms"] = schoolFormsPerOperations
         model["schoolType"] = schoolType
+
         return "subject_list"
     }
 
@@ -41,6 +49,7 @@ class WebController(@Autowired
         model["subject"] = curriculumService.getSubject(schoolType, subjectCode)
         model["schoolType"] = schoolType
         model["syllabuses"] = subjectNamesPerSchoolForm
+        model["gropedSchoolForms"] = schoolFormsPerOperations
         return "subject"
     }
 

@@ -18,8 +18,13 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li th:each="syllabus: ${syllabuses}" th:class="${syllabus.key == selectedSyllabus ? 'active' : ''}">
-                        <a th:href="@{/subject/{schoolType}/(schoolType=${syllabus.key})}" href="#" th:text="${syllabus.key}"></a>
+                    <li th:each="syllabusGroup: ${gropedSchoolForms}" th:class="${syllabusGroup.value.contains(selectedSyllabus) ? 'active dropdown' : 'dropdown'}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ><span th:text="${syllabusGroup.key}"></span>  <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li th:each="syllabus: ${syllabusGroup.value}" th:class="${syllabus == selectedSyllabus ? 'active' : ''}">
+                                <a th:href="@{/subject/{schoolType}/(schoolType=${syllabus})}" href="#" th:text="${syllabus}"></a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
