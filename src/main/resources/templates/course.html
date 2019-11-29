@@ -57,6 +57,46 @@
             </div>
         </div>
     </div>
+    <div th:fragment="subjectArea(courseItem)" class="panel panel-primary">
+        <div class="panel-heading" th:text="|[${courseItem.getCode()}] ${courseItem.getName()}|">[kod] Ämne</div>
+        <div class="panel-body">
+            <div th:if="${courseItem.getDescription()} != ''">
+                <h3>Beskrivning</h3>
+                <p th:text="${courseItem.getDescription()}"></p>
+            </div>
+            <div>
+                <h3>Centralt innehåll</h3>
+                <th:block th:each="cc : ${courseItem.getCentralContent()}">
+                    <h4 th:text="${cc.getHeading()}"></h4>
+                    <ul><li th:each="line: ${cc.getLines()}" th:text="${line}"></li></ul>
+                </th:block>
+            </div>
+            <div>
+                <h3>Kunskapskrav</h3>
+                <table class="table table-bordered" style="border: none;">
+                    <tr>
+                        <th>Grundläggande Kunskaper</th>
+                        <th>Avancerade Kunskaper</th>
+                    </tr>
+                    <th:block th:each="krp, iterStats: ${courseItem.getKnowledgeRequirementParagraphs()}">
+                        <tr class="section-heading" th:unless="${krp.getHeading() == null}">
+                            <td colspan="3">
+                                <h4  th:utext="${krp.getHeading()}"></h4>
+                                <p th:utext="${krp.getDescription()}"></p>
+                            </td>
+                        </tr>
+                        <tr th:each="kr : ${krp.getKnowledgeRequirements()}">
+                            <td th:utext="${kr.knowledgeRequirementChoice.getOrDefault(T(org.edtech.curriculum.GradeStep).BASIC_REQUIREMENTS,'')}"></td>
+                            <td th:utext="${kr.knowledgeRequirementChoice.getOrDefault(T(org.edtech.curriculum.GradeStep).ADVANCED_REQUIREMENTS,'')}"></td>
+                        </tr>
+                        <tr>
+                            <th th:unless="${iterStats.last}" colspan="3" class="divider"></th>
+                        </tr>
+                    </th:block>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /.container -->
 

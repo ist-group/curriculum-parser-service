@@ -42,10 +42,16 @@
                     </ul>
                 </section>
             </div>
-            <div>
+            <div th:if="${subject.getTypeOfSyllabus() != T(org.edtech.curriculum.SyllabusType).SUBJECT_AREA_SYLLABUS}">
                 <h3>Kurser / Stadier</h3>
                 <div th:each="course: ${subject.getCourses()}">
                     <div th:replace="course::course(${course})"></div>
+                </div>
+            </div>
+            <div th:if="${subject.getTypeOfSyllabus() == T(org.edtech.curriculum.SyllabusType).SUBJECT_AREA_SYLLABUS}">
+                <h3>Ämnesområden</h3>
+                <div th:each="course: ${subject.getCourses()}">
+                    <div th:replace="course::subjectArea(${course})"></div>
                 </div>
             </div>
         </div>

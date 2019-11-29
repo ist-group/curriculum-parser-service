@@ -14,7 +14,7 @@ class WebController(@Autowired
 
     val schoolFormsPerOperations: Map<String, List<SchoolType>> = mapOf(
         "GR" to listOf(SchoolType.GR, SchoolType.GRS, SchoolType.GRSAM, SchoolType.GRSPEC, SchoolType.GRSSPEC, SchoolType.SPEC),
-        "GY" to listOf(SchoolType.GY, SchoolType.GYS, SchoolType.GYS_SUBJECT_AREA),
+        "GY" to listOf(SchoolType.GY, SchoolType.GYS),
         "VUX" to listOf(SchoolType.VUXGR, SchoolType.VUXGRS, SchoolType.SFI))
 
     val subjectNamesPerSchoolForm: Map<SchoolType, List<NameAndCode>> = SchoolType.values()
